@@ -4,15 +4,14 @@ import * as util from 'node:util';
 import * as fs from 'node:fs';
 import * as workerThreads from 'node:worker_threads';
 
+declare var self: Worker;
 const CHAR_SEMICOLON = ';'.charCodeAt(0);
 const CHAR_NEWLINE = '\n'.charCodeAt(0);
 const TOKEN_STATION_NAME = 0;
 const TOKEN_TEMPERATURE = 1;
-
-/** @type {(...args: any[]) => void} */
-const debug = process.env.DEBUG ? console.error : () => {};
-
-declare var self: Worker;
+const debug: (...args: any[]) => void = process.env.DEBUG
+  ? console.error
+  : () => {};
 
 type CalcResultsCont = Map<
   string,
@@ -23,7 +22,7 @@ self.addEventListener('message', (event) => {
   worker(event.data.fileName, event.data.start, event.data.end);
 });
 
-function worker(fileName: string, start: number, end: number) {
+function worker(fileName: string, start: number, end: number): void {
   if (start > end - 1) {
     postMessage(new Map());
   } else {
@@ -36,10 +35,7 @@ function worker(fileName: string, start: number, end: number) {
   }
 }
 
-/**
- * @param {import('node:fs').ReadStream} readStream
- */
-function parseStream(readStream: fs.ReadStream) {
+function parseStream(readStream: fs.ReadStream): void {
   let readingToken = TOKEN_STATION_NAME;
 
   let stationName = Buffer.allocUnsafe(100);
@@ -50,16 +46,9 @@ function parseStream(readStream: fs.ReadStream) {
 
   let rowCount = 0;
 
-  /**
-   * @type {CalcResultsCont}
-   */
-  const map = new Map();
+  const map: CalcResultsCont = new Map();
 
-  /**
-   * @param {Buffer} chunk
-   * @returns {void}
-   */
-  function parseChunk(chunk: Buffer) {
+  function parseChunk(chunk: Buffer): void {
     for (let i = 0; i < chunk.length; i++) {
       if (chunk[i] === CHAR_SEMICOLON) {
         readingToken = TOKEN_TEMPERATURE;
@@ -162,6 +151,6 @@ function parseFloatBufferIntoInt(b: Buffer, length: number): number {
  *
  * @returns {number}
  */
-function parseOneDigit(char: number) {
+function parseOneDigit(char: number): number {
   return char - 0x30;
 }

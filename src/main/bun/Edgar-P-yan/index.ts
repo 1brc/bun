@@ -118,10 +118,7 @@ for (let i = 0; i < chunkOffsets.length; i++) {
   });
 }
 
-/**
- * @param {CalcResultsCont} compiledResults
- */
-function printCompiledResults(compiledResults: CalcResultsCont) {
+function printCompiledResults(compiledResults: CalcResultsCont): void {
   const sortedStations = Array.from(compiledResults.keys()).sort();
 
   process.stdout.write('{');
@@ -148,11 +145,8 @@ function printCompiledResults(compiledResults: CalcResultsCont) {
  * round(1.2345) // "1.2"
  * round(1.55) // "1.6"
  * round(1) // "1.0"
- *
- * @param {number} num
- * @returns {string}
  */
-function round(num: number) {
+function round(num: number): string {
   const fixed = Math.round(10 * num) / 10;
 
   return fixed.toFixed(1);
